@@ -11,6 +11,14 @@ export const useGetProjectsById = (projectId: string) => {
     },
     enabled: !!projectId,
     staleTime: 1000 * 60 * 3,
+    refetchInterval: (query) => {
+      const data = query.state.data;
+      // If project has no frames yet (generating), poll every 3 seconds
+      if (data && (!data.frames || data.frames.length === 0)) {
+        return 3000;
+      }
+      return false;
+    },
     refetchOnWindowFocus: false,
   });
 };
