@@ -26,14 +26,15 @@ export const useCreateProject = () => {
 
 export const useGetProjects = (userId?: string) => {
   return useQuery({
-    queryKey: ["projects"],
+    queryKey: ["projects", userId],
     queryFn: async () => {
       const res = await axios.get("/api/project");
-      return res.data.data;
+      return res.data?.data || [];
     },
     enabled: !!userId,
     staleTime: 1000 * 60 * 3, // 3 minutes cache: instant loading with zero spinner on return
     gcTime: 1000 * 60 * 10,
+    retry: 2, // Retry twice if serverless cold-start happens
     refetchOnWindowFocus: false, // Prevents blocking re-fetches when switching windows
   });
 };
