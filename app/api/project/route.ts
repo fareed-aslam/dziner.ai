@@ -4,6 +4,9 @@ import prisma from "@/lib/prisma";
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { NextResponse } from "next/server";
 
+export const dynamic = "force-dynamic";
+export const maxDuration = 60;
+
 export async function GET(request: Request) {
   try {
     const session = await getKindeServerSession();
@@ -79,19 +82,20 @@ export async function POST(request: Request) {
         name: "ui/generate.screens",
         data: { userId, projectId: project.id, prompt },
       });
-    } catch (error) {
-      console.log(error);
+    } catch (error: any) {
+      console.error("[POST /api/project] Inngest send error:", error?.message || error);
     }
 
     return NextResponse.json({
       success: true,
       data: project,
     });
-  } catch (error) {
-    console.log("Error occurred", error);
+  } catch (error: any) {
+    console.error("[POST /api/project] Error creating project:", error);
     return NextResponse.json(
       {
         error: "failed to create project",
+        message: error?.message || String(error),
       },
       {
         status: 500,

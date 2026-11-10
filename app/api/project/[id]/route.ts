@@ -4,6 +4,9 @@ import prisma from "@/lib/prisma";
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 
+export const dynamic = "force-dynamic";
+export const maxDuration = 60;
+
 export async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> },
@@ -90,18 +93,19 @@ export async function POST(
           theme: project.theme,
         },
       });
-    } catch (error) {
-      console.log(error);
+    } catch (error: any) {
+      console.error("[POST /api/project/[id]] Inngest send error:", error?.message || error);
     }
 
     return NextResponse.json({
       success: true,
     });
-  } catch (error) {
-    console.log("Error occurred", error);
+  } catch (error: any) {
+    console.error("[POST /api/project/[id]] Error generating frame:", error);
     return NextResponse.json(
       {
         error: "failed to generate frame",
+        message: error?.message || String(error),
       },
       {
         status: 500,
