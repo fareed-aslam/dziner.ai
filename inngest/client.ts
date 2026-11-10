@@ -1,0 +1,7 @@
+import { Inngest } from "inngest";
+
+export const inngest = new Inngest({
+  id: "dziner-ai",
+  signingKey: process.env.INNGEST_SIGNING_KEY,
+  isDev: process.env.NODE_ENV !== "production" || process.env.INNGEST_DEV === "1",
+});
